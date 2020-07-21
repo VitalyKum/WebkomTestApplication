@@ -1,0 +1,73 @@
+﻿@model Webkom.Models.Switch
+
+@{
+    ViewData["Title"] = "Изменение сведений о коммутаторе";
+}
+
+<h1>Изменение сведений о коммутаторе</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="IPAddress" class="control-label"></label>
+                <input asp-for="IPAddress" class="form-control" />
+                <span asp-validation-for="IPAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MACAddress" class="control-label"></label>
+                <input asp-for="MACAddress" class="form-control" />
+                <span asp-validation-for="MACAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VLanId" class="control-label"></label>
+                <input asp-for="VLanId" class="form-control" />
+                <span asp-validation-for="VLanId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SerialNumber" class="control-label"></label>
+                <input asp-for="SerialNumber" class="form-control" />
+                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InventoryNumber" class="control-label"></label>
+                <input asp-for="InventoryNumber" class="form-control" />
+                <span asp-validation-for="InventoryNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PurchaseDate" class="control-label"></label>
+                <input asp-for="PurchaseDate" class="form-control" />
+                <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConnectDate" class="control-label"></label>
+                <input asp-for="ConnectDate" class="form-control" />
+                <span asp-validation-for="ConnectDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FloorNumber" class="control-label"></label>
+                <input asp-for="FloorNumber" class="form-control" />
+                <span asp-validation-for="FloorNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад к списку</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

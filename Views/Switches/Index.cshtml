@@ -1,0 +1,243 @@
+﻿@model Webkom.Stuff.PaginatedList<Webkom.Models.Switch>
+
+@{
+    ViewData["Title"] = "Index";
+    
+    var filterString = Model.Filter.ExtendedMode ? "Упрощенный поиск" : "Расширенный поиск";
+}
+<form asp-action="Index">
+    <div class="card-header">
+        <h1>Управление коммутаторами</h1>
+        <p>
+            <a asp-route-extendedMode="@(!Model.Filter.ExtendedMode)">@filterString</a>
+        </p>
+        @if (!Model.Filter.ExtendedMode)
+        {
+            <p>
+                <label class="control-label">Искать</label>
+                <input type="text" asp-for="Filter.SearchString" class="form-control col-md-4" />
+            </p>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-10">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <label asp-for="Filter.IPAddress" class="input-group-text" id="inputGroup-IP"></label>
+                    </div>
+                    <input asp-for="Filter.IPAddress" class="form-control" aria-describedby="inputGroup-IP" />
+                </div>
+                <span asp-validation-for="Filter.IPAddress" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <label asp-for="Filter.MACAddress" class="input-group-text" id="inputGroup-MAC"></label>
+                    </div>
+                    <input asp-for="Filter.MACAddress" class="form-control" aria-describedby="inputGroup-MAC" />
+                </div>
+                <span asp-validation-for="Filter.MACAddress" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <label asp-for="Filter.SerialNumber" class="input-group-text" id="inputGroup-Serial"></label>
+                    </div>
+                    <input asp-for="Filter.SerialNumber" class="form-control" aria-describedby="inputGroup-Serial" />
+                </div>
+                <span asp-validation-for="Filter.SerialNumber" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <label asp-for="Filter.InventoryNumber" class="input-group-text" id="inputGroup-Inventory"></label>
+                    </div>
+                    <input asp-for="Filter.InventoryNumber" class="form-control" aria-describedby="inputGroup-Inventory" />
+                </div>
+                <span asp-validation-for="Filter.InventoryNumber" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" id="inputGroup-Description">Комментарий</label>
+                    </div>
+                    <input asp-for="Filter.Description" class="form-control" aria-describedby="inputGroup-Description" />
+                </div>
+                <span asp-validation-for="Filter.Description" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" asp-for="Filter.EnableVLanIDSearch" onclick="toggleInputElementSwitchFilterVLanID()" title="Искать по данному критерию">
+                            <span id="inputGroup-VLan">Идентификатор VLan, интервал</span>
+                        </div>
+                    </div>
+                    <input asp-for="Filter.VLanIdMin" id="inputVLanIdMin" disabled="@(Model.Filter.EnableVLanIDSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-VLan" />
+                    <input asp-for="Filter.VLanIdMax" id="inputVLanIdMax" disabled="@(Model.Filter.EnableVLanIDSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-VLan" />
+                </div>
+                <span asp-validation-for="Filter.VLanIdMin" class="text-danger"></span>
+                <span asp-validation-for="Filter.VLanIdMax" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" asp-for="Filter.EnableFloorNumberSearch" onclick="toggleInputElementSwitchFilterFloorNumber()" title="Искать по данному критерию">
+                            <span id="inputGroup-Floor">Этаж размещения, интервал</span>
+                        </div>
+                    </div>
+                    <input asp-for="Filter.FloorNumberMin" id="inputFloorNumberMin" disabled="@(Model.Filter.EnableFloorNumberSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-Floor" title="Min Floor number" />
+                    <input asp-for="Filter.FloorNumberMax" id="inputFloorNumberMax" disabled="@(Model.Filter.EnableFloorNumberSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-Floor" title="Max floor number" />
+                </div>
+                <span asp-validation-for="Filter.FloorNumberMin" class="text-danger"></span>
+                <span asp-validation-for="Filter.FloorNumberMax" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" asp-for="Filter.EnablePuchaseDataSearch" onclick="toggleInputElementSwitchFilterPurchaseDate()" title="Искать по данному критерию">
+                            <span id="inputGroup-PurchaseDate">Дата покупки, интервал</span>
+                        </div>
+                    </div>
+                    <input asp-for="Filter.PurchaseDateMin" id="inputPurchaseDateMin" disabled="@(Model.Filter.EnablePuchaseDataSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-PurchaseDate" title="Min purchase date" />
+                    <input asp-for="Filter.PurchaseDateMax" id="inputPurchaseDateMax" disabled="@(Model.Filter.EnablePuchaseDataSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-PurchaseDate" title="Max purchase date" />
+                </div>
+                <span asp-validation-for="Filter.PurchaseDateMin" class="text-danger"></span>
+                <span asp-validation-for="Filter.PurchaseDateMax" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="input-group input-group-sm col-md-6">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" asp-for="Filter.EnableConnectDateSearch" onclick="toggleInputElementSwitchFilterConnectDate()" title="Искать по данному критерию">
+                            <span id="inputGroup-ConnectDate">Дата установки, интервал</span>
+                        </div>
+                    </div>
+                    <input asp-for="Filter.ConnectDateMin" id="inputConnectDateMin" disabled="@(Model.Filter.EnableConnectDateSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-ConnectDate" title="Min connect date" />
+                    <input asp-for="Filter.ConnectDateMax" id="inputConnectDateMax" disabled="@(Model.Filter.EnableConnectDateSearch ? null : "disabled")" class="form-control" aria-describedby="inputGroup-ConnectDate" title="Max date connect" />
+                </div>
+                <span asp-validation-for="Filter.ConnectDateMin" class="text-danger"></span>
+                <span asp-validation-for="Filter.ConnectDateMax" class="text-danger"></span>
+            </div>
+            <br />
+        }
+    <p>
+        <label>Записей на странице</label>
+        <select class="browser-default custom-select custom-select-sm col-sm-1" asp-for="PageSize" asp-items="Model.PageSizeOptions"></select>
+        <input type="submit" class="btn btn-success" asp-route-extendedMode="@(Model.Filter.ExtendedMode)" value="Найти" />
+        <span asp-validation-for="PageSize" class="text-danger"></span>
+    </p>
+
+    </div>
+
+    <div class="card-body">
+        <p>
+            <a asp-action="Create">Добавить коммутатор</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        IP Адрес
+                    </th>
+                    <th>
+                        MAC Адрес
+                    </th>
+                    <th>
+                        VLAN
+                    </th>
+                    <th>
+                        Серийный номер
+                    </th>
+                    <th>
+                        Инвентарный номер
+                    </th>
+                    <th>
+                        Дата покупки
+                    </th>
+                    <th>
+                        Дата установки
+                    </th>
+                    <th>
+                        Этаж размещения
+                    </th>
+                    <th>
+                        Комментарий
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.IPAddress)</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MACAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VLanId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SerialNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InventoryNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PurchaseDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ConnectDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FloorNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer">
+        <input type="submit"
+               asp-route-pageIndex="@(Model.PageIndex - 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-extendedMode="@Model.Filter.ExtendedMode"
+               class="btn btn-info" disabled="@(Model.HasPreviousPage ? null : "disabled")" value="Предыдущая" />
+
+        <input type="submit"
+               asp-route-pageIndex="@(Model.PageIndex + 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-extendedMode="@Model.Filter.ExtendedMode"
+               class="btn btn-info" disabled="@(Model.HasNextPage ? null : "disabled")" value="Следующая">
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
